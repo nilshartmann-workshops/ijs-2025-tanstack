@@ -1,12 +1,13 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { fetchDonutDetailOpts } from "@/queries.ts";
 import DonutLikeButton from "@/components/DonutLikeButton.tsx";
 
 type FavDonutProps = {
   donutId: string;
 };
 export default function FavDonut({ donutId }: FavDonutProps) {
-  const { data: donut } = useSuspenseQuery(fetchDonutDetailOpts(donutId));
+  // todo:
+  //   - remove next line
+  //   - load donut with suspense query instead
+  const donut: any = {};
 
   return (
     <div className={"FavDonut"}>

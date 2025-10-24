@@ -1,27 +1,32 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import LoadingIndicator from "@/components/LoadingIndicator.tsx";
-import { fetchCommentsOpts } from "@/queries.ts";
+import { DonutCommentDtoList } from "@/types.ts";
 
 type CommentListProps = {
   donutId: string;
 };
-export default function CommentList({ donutId }: CommentListProps) {
-  return (
-    <div className={"CommentList"}>
-      <h1>What the Snackers Say</h1>
-      <Suspense fallback={<CommentLoadingIndicator />}>
-        <CommentListView cardId={donutId} />
-      </Suspense>
-    </div>
-  );
-}
 
-type CommentListViewProps = {
-  cardId: string;
-};
-function CommentListView({ cardId }: CommentListViewProps) {
-  const { data: comments } = useSuspenseQuery(fetchCommentsOpts(cardId));
+export default function CommentList({ donutId }: CommentListProps) {
+  // todo:
+  // load comments from backend
+  //
+  // ----> copy into src/queries.ts:
+  // export const fetchCommentsOpts = (donutId: string) =>
+  //   queryOptions({
+  //     queryKey: ["donuts", "detail", donutId, "comments"],
+  //     async queryFn() {
+  //       const r = await ky
+  //         .get(`http://localhost:7200/api/donuts/${donutId}/comments`)
+  //         .json();
+  //       return DonutCommentDtoList.parse(r);
+  //     },
+  //   });
+  //  -------------------------------
+  //  ----> remove this line:
+  const comments: DonutCommentDtoList = [];
+  //  ----> ...and use this line instead to load comments here:
+  // const { data: comments } = useSuspenseQuery(fetchCommentsOpts(donutId));
 
   return comments.map((c) => (
     <div key={c.id} className={"CommentItem"}>
@@ -30,12 +35,4 @@ function CommentListView({ cardId }: CommentListViewProps) {
       </p>
     </div>
   ));
-}
-
-function CommentLoadingIndicator() {
-  return (
-    <LoadingIndicator>
-      <span className={"font-caveat"}>Comments loading...</span>
-    </LoadingIndicator>
-  );
 }

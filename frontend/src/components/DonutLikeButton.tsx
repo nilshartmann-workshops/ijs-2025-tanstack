@@ -1,5 +1,4 @@
 import { twMerge } from "tailwind-merge";
-import { useLikeMutation } from "@/queries.ts";
 
 type DonutLikeButtonProps = {
   donutId: string;
@@ -12,20 +11,22 @@ export default function DonutLikeButton({
   currentLikes,
   variant = "lg",
 }: DonutLikeButtonProps) {
-  const mutation = useLikeMutation(donutId);
+  // todo:
+  //  - Describe Mutation
+  //  - Execute Mutation on button click
+  //  - add visual feedback while mutation runs
+  //  - disable button while mutation runs
 
   const buttonClassName = twMerge(
     "border-brown text-brown hover:bg-sprinkleBlue font-caveat flex items-center justify-center space-x-2 rounded-2xl border bg-slate-50 px-3 py-1 hover:cursor-pointer hover:text-white",
+    "disabled:hover:bg-grey-200 disabled:hover:bg-sprinkleBlue/80 disabled:cursor-default",
     variant === "lg" ? "text-2xl" : "text-base",
-    mutation.isPending && "animate-pulse",
   );
 
   const textClassName = twMerge(variant === "lg" ? "text-2xl" : "text-base");
 
-  const handleClick = () => mutation.mutate();
-
   return (
-    <button type={"submit"} className={buttonClassName} onClick={handleClick}>
+    <button type={"submit"} className={buttonClassName}>
       <span className={textClassName}>{currentLikes}</span>
       <i className="fa-regular fa-heart mr-2"></i>
     </button>

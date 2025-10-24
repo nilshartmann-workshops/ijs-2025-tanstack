@@ -2,12 +2,10 @@ import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
-  retainSearchParams,
 } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
-import DevtoolsPanel from "@/components/DevtoolsPanel.tsx";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -23,9 +21,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
-      {
-        title: "Donuitgram",
-      },
     ],
     links: [
       {
@@ -40,13 +35,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
-  notFoundComponent: () => {
-    return <div>Page not found 🥺</div>;
-  },
-
-  search: {
-    middlewares: [retainSearchParams(true)],
-  },
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
@@ -55,14 +43,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body
-        suppressHydrationWarning
-        className={
-          "bg-glaze-subtle text-brown font-fredoka font-a min-h-screen pb-8"
-        }
-      >
+      <body suppressHydrationWarning>
         {children}
-        <DevtoolsPanel />
         <Scripts />
       </body>
     </html>

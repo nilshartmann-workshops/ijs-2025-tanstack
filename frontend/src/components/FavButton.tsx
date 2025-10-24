@@ -1,8 +1,5 @@
 import { twMerge } from "tailwind-merge";
-import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { toggleId } from "@/components/utils.ts";
-
-const Route = getRouteApi("/donuts");
 
 export default function FavButton({
   donutId,
@@ -11,19 +8,19 @@ export default function FavButton({
   donutId: string;
   variant?: "lg" | "sm";
 }) {
-  const navigate = useNavigate();
-
-  // todo: select from search
-  const { favIds = [] } = Route.useSearch();
-  const isFav = favIds.includes(donutId);
+  // todo: favIds select from search
+  const favIds: string[] = [];
+  const isFav = favIds?.includes(donutId);
 
   const handleFavClick = () => {
-    navigate({
-      to: ".",
-      search: {
-        favIds: toggleId(favIds, donutId),
-      },
-    });
+    // Use 'navigate' from TanStack Router to
+    //   navigate to the current path but with
+    //   updated 'favIds' search params
+    //
+    //   note: you can use 'toggleId' from  "@/components/utils.ts"
+    //    to create the new list of favIds
+    //    (the function automatically adds/removes a given id
+    //     to a list of existing ids)
   };
 
   const buttonClassName = twMerge(
