@@ -22,7 +22,7 @@ export const fetchDonutDetailsOpts = (donutId: string) =>
         // 🤔 what happens, when we NAVIGATE from donut to LIST and back?
         //    -> Cache!
         // ⚠️ Waterfall: first list, then comments
-        .get(`http://localhost:7200/api/donuts/${donutId}?slow=2400`)
+        .get(`http://localhost:7200/api/donuts/${donutId}?slow=0`)
         .json();
       return DonutDto.parse(response);
     },
@@ -47,8 +47,31 @@ export const fetchCommentsOpts = (donutId: string) =>
     async queryFn() {
       // ACHTUNG! fetchDonutDetailsOpts slow=0 setzen
       const r = await ky
-        .get(`http://localhost:7200/api/donuts/${donutId}/comments?slow=2000`)
+        .get(`http://localhost:7200/api/donuts/${donutId}/comments?slow=0`)
         .json();
       return DonutCommentDtoList.parse(r);
     },
   });
+
+export const useLikeMutation = (donutId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn() {
+      const response = await ky
+        .put(`http://localhost:7200/api/donuts/${donutId}/likes`)
+        .json();
+      return DonutDto.parse(response);
+    },
+    onSuccess(newValue) {
+      // invalidate the donut list
+      //  ⚠️ Open LIST and click on like!
+      //  ⚠️ Details are re-fetched, thus automatically up-to-date
+      //     -> but what happens when we like on the DETAIL page?
+      //
+      queryClient.invalidateQueries({
+        queryKey: fetchDonutListOpts().queryKey.slice(0, 2),
+      });
+    },
+  });
+};
