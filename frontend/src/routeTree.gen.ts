@@ -9,27 +9,96 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DonutsRouteRouteImport } from './routes/donuts/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as DonutsIndexRouteImport } from './routes/donuts/index'
 
-export interface FileRoutesByFullPath {}
-export interface FileRoutesByTo {}
+const DonutsRouteRoute = DonutsRouteRouteImport.update({
+  id: '/donuts',
+  path: '/donuts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonutsIndexRoute = DonutsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DonutsRouteRoute,
+} as any)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/donuts': typeof DonutsRouteRouteWithChildren
+  '/donuts/': typeof DonutsIndexRoute
+}
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/donuts': typeof DonutsIndexRoute
+}
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/donuts': typeof DonutsRouteRouteWithChildren
+  '/donuts/': typeof DonutsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: never
+  fullPaths: '/' | '/donuts' | '/donuts/'
   fileRoutesByTo: FileRoutesByTo
-  to: never
-  id: '__root__'
+  to: '/' | '/donuts'
+  id: '__root__' | '/' | '/donuts' | '/donuts/'
   fileRoutesById: FileRoutesById
 }
-export interface RootRouteChildren {}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  DonutsRouteRoute: typeof DonutsRouteRouteWithChildren
 }
 
-const rootRouteChildren: RootRouteChildren = {}
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/donuts': {
+      id: '/donuts'
+      path: '/donuts'
+      fullPath: '/donuts'
+      preLoaderRoute: typeof DonutsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donuts/': {
+      id: '/donuts/'
+      path: '/'
+      fullPath: '/donuts/'
+      preLoaderRoute: typeof DonutsIndexRouteImport
+      parentRoute: typeof DonutsRouteRoute
+    }
+  }
+}
+
+interface DonutsRouteRouteChildren {
+  DonutsIndexRoute: typeof DonutsIndexRoute
+}
+
+const DonutsRouteRouteChildren: DonutsRouteRouteChildren = {
+  DonutsIndexRoute: DonutsIndexRoute,
+}
+
+const DonutsRouteRouteWithChildren = DonutsRouteRoute._addFileChildren(
+  DonutsRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  DonutsRouteRoute: DonutsRouteRouteWithChildren,
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()

@@ -7,7 +7,7 @@ export default function LandingPage() {
         <h1>
           {/* todo: add Link to '/donuts' (replace the to-property) */}
           <Link
-            to={"."}
+            to={"/donuts"}
             className="text-sprinkleBlue font-fredoka flex justify-center text-6xl tracking-wider no-underline hover:text-pink-400 hover:underline hover:underline-offset-8 md:text-8xl"
           >
             Donutigram

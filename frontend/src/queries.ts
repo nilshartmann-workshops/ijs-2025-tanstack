@@ -12,3 +12,27 @@ const ky = _ky.extend({
   retry: 0,
   timeout: 5000,
 });
+
+type FetchDonutListOptsArgs = "" | "name" | "likes";
+
+export const fetchDonutListOpts = (orderBy: FetchDonutListOptsArgs = "") =>
+  queryOptions({
+    queryKey: ["donuts", "list", { orderBy }],
+    async queryFn() {
+      const response = await ky
+        .get("http://localhost:7200/api/donuts?orderBy=" + orderBy)
+        .json();
+      return DonutDtoList.parse(response);
+    },
+  });
+
+export const fetchCommentsOpts = (donutId: string) =>
+  queryOptions({
+    queryKey: ["donuts", "detail", donutId, "comments"],
+    async queryFn() {
+      const r = await ky
+        .get(`http://localhost:7200/api/donuts/${donutId}/comments`)
+        .json();
+      return DonutCommentDtoList.parse(r);
+    },
+  });

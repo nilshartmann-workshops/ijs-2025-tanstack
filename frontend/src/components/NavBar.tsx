@@ -8,12 +8,12 @@ export default function NavBar() {
       }
     >
       {/* todo: update Link to point to "/"-Route */}
-      <Link to={"."}>
+      <Link to={"/"}>
         <img src={"/images/d-icon.png"} className={"h-12"} alt={"Home"} />
       </Link>
       {/* todo: update Link to point to "/donuts"-Route */}
       <Link
-        to={"."}
+        to={"/donuts"}
         className="hover:text-sprinkleBlue text-brown tracking-wider"
       >
         Donuts

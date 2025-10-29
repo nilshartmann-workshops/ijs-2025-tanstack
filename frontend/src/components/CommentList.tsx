@@ -2,6 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Suspense } from "react";
 import LoadingIndicator from "@/components/LoadingIndicator.tsx";
 import { DonutCommentDtoList } from "@/types.ts";
+import { fetchCommentsOpts } from "@/queries.ts";
 
 type CommentListProps = {
   donutId: string;
@@ -24,9 +25,9 @@ export default function CommentList({ donutId }: CommentListProps) {
   //   });
   //  -------------------------------
   //  ----> remove this line:
-  const comments: DonutCommentDtoList = [];
+  // const comments: DonutCommentDtoList = [];
   //  ----> ...and use this line instead to load comments here:
-  // const { data: comments } = useSuspenseQuery(fetchCommentsOpts(donutId));
+  const { data: comments } = useSuspenseQuery(fetchCommentsOpts(donutId));
 
   return comments.map((c) => (
     <div key={c.id} className={"CommentItem"}>
