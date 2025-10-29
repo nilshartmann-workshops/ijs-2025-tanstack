@@ -72,6 +72,14 @@ export const useLikeMutation = (donutId: string) => {
       queryClient.invalidateQueries({
         queryKey: fetchDonutListOpts().queryKey.slice(0, 2),
       });
+
+      // we can even set the cache directly => no network call neccessary here
+      queryClient.setQueryData(
+        fetchDonutDetailsOpts(donutId).queryKey,
+        (currentValue) => {
+          return newValue;
+        },
+      );
     },
   });
 };

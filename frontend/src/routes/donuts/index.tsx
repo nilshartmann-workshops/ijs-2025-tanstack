@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { z } from "zod/v4";
 import DonutList from "@/components/DonutList.tsx";
 import { fetchDonutListOpts } from "@/queries.ts";
+import FavList from "@/components/FavList.tsx";
 
 const DonutListSearchParams = z.object({
   orderBy: z.enum(["name", "likes"]).optional(),
@@ -41,6 +42,8 @@ function RouteComponent() {
       </div>
 
       <DonutList donuts={donuts} />
+      {/* example: global state behaviour of cache */}
+      <FavList favIds={["1", "2"]} />
     </div>
   );
 }
