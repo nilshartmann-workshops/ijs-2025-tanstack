@@ -7,6 +7,7 @@ import {
 import appCss from "../styles.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
+import DevtoolsPanel from "@/components/DevtoolsPanel.tsx";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -52,6 +53,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body suppressHydrationWarning className={"Root"}>
         {children}
+        {/*
+         🤔 when is the cache populated?
+         👉 even on SSR'ed routes, the cache content is
+            populated on server
+        */}
+        <DevtoolsPanel />
+
         <Scripts />
       </body>
     </html>

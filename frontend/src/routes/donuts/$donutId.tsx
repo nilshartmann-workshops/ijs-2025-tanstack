@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetchDonutDetailsOpts } from "@/queries.ts";
 import DonutDetail from "@/components/DonutDetail.tsx";
+import LoadingIndicator from "@/components/LoadingIndicator.tsx";
 
 export const Route = createFileRoute("/donuts/$donutId")({
   head({ params }) {
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/donuts/$donutId")({
     };
   },
   component: RouteComponent,
+  pendingComponent: () => <LoadingIndicator />,
 });
 
 function RouteComponent() {
