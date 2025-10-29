@@ -1,4 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { fetchDonutDetailsOpts } from "@/queries.ts";
+import DonutDetail from "@/components/DonutDetail.tsx";
 
 export const Route = createFileRoute("/donuts/$donutId")({
   head({ params }) {
@@ -17,5 +20,7 @@ export const Route = createFileRoute("/donuts/$donutId")({
 function RouteComponent() {
   const { donutId } = Route.useParams();
   //         ^---- TypeSafe!
-  return <div>Hello Donut with Id {donutId}</div>;
+  const { data: donut } = useSuspenseQuery(fetchDonutDetailsOpts(donutId));
+
+  return <DonutDetail donut={donut} />;
 }
