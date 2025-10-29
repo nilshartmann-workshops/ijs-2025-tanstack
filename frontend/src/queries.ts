@@ -21,7 +21,7 @@ export const fetchDonutDetailsOpts = (donutId: string) =>
         // 🤔 what happens, when we slow down here?
         // 🤔 what happens, when we NAVIGATE from donut to LIST and back?
         //    -> Cache!
-        .get(`http://localhost:7200/api/donuts/${donutId}?slow=2400`)
+        .get(`http://localhost:7200/api/donuts/${donutId}?slow=0`)
         .json();
       return DonutDto.parse(response);
     },
@@ -44,8 +44,9 @@ export const fetchCommentsOpts = (donutId: string) =>
   queryOptions({
     queryKey: ["donuts", "detail", donutId, "comments"],
     async queryFn() {
+      // ACHTUNG! fetchDonutDetailsOpts slow=0 setzen
       const r = await ky
-        .get(`http://localhost:7200/api/donuts/${donutId}/comments`)
+        .get(`http://localhost:7200/api/donuts/${donutId}/comments?slow=2000`)
         .json();
       return DonutCommentDtoList.parse(r);
     },
