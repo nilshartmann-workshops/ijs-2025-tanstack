@@ -13,18 +13,38 @@ const ky = _ky.extend({
   timeout: 5000,
 });
 
+const loadSingleDonut = createServerFn({ method: "GET" })
+  .inputValidator((data) => {
+    if (typeof data !== "string") {
+      throw new Error("Please specify donutId");
+    }
+    return data;
+  })
+  .handler(async ({ data: donutId }) => {
+    try {
+      console.log("Loading Donut", donutId);
+      const response = await ky
+        .get(`http://localhost:7200/api/donuts/${donutId}?slow=r10`)
+        .json();
+      return DonutDto.parse(response);
+    } catch (err) {
+      if (err instanceof HTTPError && err.response?.status === 404) {
+        throw notFound();
+      }
+      throw err;
+    }
+  });
+
 export const fetchDonutDetailsOpts = (donutId: string) =>
   queryOptions({
     queryKey: ["donuts", "details", donutId],
+    // WHERE IS OUR REQUEST EXECUTED?
+    //  -> loaders are isomorphic!!
+    //  -> components are rendered both at server AND client
+    //  -> using a server function, we can be sure that we're on the serverside
+
     async queryFn() {
-      const response = await ky
-        // 🤔 what happens, when we slow down here?
-        // 🤔 what happens, when we NAVIGATE from donut to LIST and back?
-        //    -> Cache!
-        // ⚠️ Waterfall: first list, then comments
-        .get(`http://localhost:7200/api/donuts/${donutId}?slow=0`)
-        .json();
-      return DonutDto.parse(response);
+      return loadSingleDonut({ data: donutId });
     },
   });
 
