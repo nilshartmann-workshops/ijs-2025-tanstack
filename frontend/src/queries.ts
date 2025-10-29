@@ -4,7 +4,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { createServerFn } from "@tanstack/react-start";
+import { createIsomorphicFn, createServerFn } from "@tanstack/react-start";
 import { notFound } from "@tanstack/react-router";
 import { DonutCommentDtoList, DonutDto, DonutDtoList } from "@/types";
 
@@ -12,6 +12,16 @@ const ky = _ky.extend({
   retry: 0,
   timeout: 5000,
 });
+
+const isOnTheServer = createIsomorphicFn()
+  .client((a: string) => {
+    console.log("Here is the client", a);
+    return false;
+  })
+  .server((a) => {
+    console.log("I'm on the server", a);
+    return true;
+  });
 
 const loadSingleDonut = createServerFn({ method: "GET" })
   .inputValidator((data) => {
@@ -44,6 +54,9 @@ export const fetchDonutDetailsOpts = (donutId: string) =>
     //  -> using a server function, we can be sure that we're on the serverside
 
     async queryFn() {
+      const isOnServer = isOnTheServer(donutId);
+      console.log("Am I on the server", isOnServer);
+
       return loadSingleDonut({ data: donutId });
     },
   });
