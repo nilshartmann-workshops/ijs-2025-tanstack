@@ -12,7 +12,13 @@ export default function DonutCard({ donut }: DonutCardProps) {
     <div className={"DonutCard group"}>
       <img alt={donut.name} src={`/images/${donut.image}`} />
       <div className={"content"}>
-        <Link to={"/donuts/$donutId"} params={{ donutId: donut.id }}>
+        <Link
+          to={"/donuts/$donutId"}
+          params={{ donutId: donut.id }}
+          // we could enable preloading even on a global level in router settings
+          // 👀 Demo: Netzwork Tab or Query Cache
+          preload={"intent"}
+        >
           <h2>{donut.name}</h2>
         </Link>
         <div className={"buttons"}>
