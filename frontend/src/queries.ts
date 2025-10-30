@@ -13,6 +13,31 @@ const ky = _ky.extend({
   timeout: 5000,
 });
 
+const loadDonut = createServerFn({ method: "GET" })
+  .inputValidator((data) => {
+    if (typeof data !== "string") {
+      throw new Error("no");
+    }
+
+    return data;
+  })
+  .handler(async ({ data: donutId }) => {
+    const response = await ky
+      .get(`http://localhost:7200/api/donuts/${donutId}?slow=0`)
+      .json();
+    return DonutDto.parse(response);
+  });
+
+export const fetchDonutDetails = (donutId: string) =>
+  queryOptions({
+    queryKey: ["donut", "details", donutId],
+    async queryFn() {
+      return loadDonut({
+        data: donutId,
+      });
+    },
+  });
+
 type FetchDonutListOptsArgs = "" | "name" | "likes";
 
 export const fetchDonutListOpts = (orderBy: FetchDonutListOptsArgs = "") =>
@@ -31,7 +56,7 @@ export const fetchCommentsOpts = (donutId: string) =>
     queryKey: ["donuts", "detail", donutId, "comments"],
     async queryFn() {
       const r = await ky
-        .get(`http://localhost:7200/api/donuts/${donutId}/comments`)
+        .get(`http://localhost:7200/api/donuts/${donutId}/comments?slow=2000`)
         .json();
       return DonutCommentDtoList.parse(r);
     },
